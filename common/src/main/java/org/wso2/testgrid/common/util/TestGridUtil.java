@@ -45,6 +45,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import static org.wso2.testgrid.common.TestGridConstants.DEFAULT_TESTGRID_HOME;
+
 /**
  * This Util class holds the common utility methods.
  *
@@ -158,7 +160,14 @@ public final class TestGridUtil {
      */
     public static String getTestGridHomePath() {
         String testGridHome = EnvironmentUtil.getSystemVariableValue(TESTGRID_HOME_ENV);
-        Path testGridHomePath = Paths.get(testGridHome);
+        Path testGridHomePath;
+        if (testGridHome == null) {
+            logger.warn("TESTGRID_HOME environment variable not set. Defaulting to ~/.testgrid.");
+            testGridHomePath = DEFAULT_TESTGRID_HOME;
+        } else {
+            testGridHomePath = Paths.get(testGridHome);
+        }
+
         return testGridHomePath.toAbsolutePath().toString();
     }
 
