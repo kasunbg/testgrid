@@ -14,19 +14,17 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>org.wso2.carbon.testgrid</groupId>
-        <artifactId>carbon-testgrid-framework</artifactId>
-        <version>0.9.0-SNAPSHOT</version>
+        <groupId>org.wso2.testgrid</groupId>
+        <artifactId>testgrid-framework</artifactId>
+        <version>0.9.0-m13-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.wso2.carbon.testgrid.reporting</artifactId>
+    <artifactId>org.wso2.testgrid.reporting</artifactId>
     <name>WSO2 TestGrid Framework - Reporting POM</name>
     <url>http://wso2.org</url>
     <packaging>jar</packaging>
@@ -37,24 +35,28 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
 
     <dependencies>
         <!-- Test grid dependencies -->
         <dependency>
-            <groupId>org.wso2.carbon.testgrid</groupId>
-            <artifactId>org.wso2.carbon.testgrid.common</artifactId>
+            <groupId>org.wso2.testgrid</groupId>
+            <artifactId>org.wso2.testgrid.common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.testgrid</groupId>
+            <artifactId>org.wso2.testgrid.dao</artifactId>
         </dependency>
 
         <!-- Other dependencies -->
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-csv</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.spullara.mustache.java</groupId>
@@ -71,6 +73,13 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- Jacoco agent -->
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>org.jacoco.agent</artifactId>
+            <classifier>runtime</classifier>
         </dependency>
     </dependencies>
 </project>

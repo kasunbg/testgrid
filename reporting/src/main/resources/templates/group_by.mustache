@@ -1,0 +1,39 @@
+{{#groupBy}}
+    <span class="tableTitle">{{groupByColumnKey}} - {{groupByColumnValue}}</span>
+    <br/>
+    <br/>
+    <!-- Test results -->
+    <table class="reportTable">
+        <thead>
+        <tr>
+            <th style="width: 5%">
+            </th>
+            {{^isGroupByDeployment}}
+                <th style="width: 12.5%">
+                    <span>Deployment</span>
+                </th>
+            {{/isGroupByDeployment}}
+            {{^isGroupByInfrastructure}}
+                <th style="width: 12.5%">
+                    <span>Infrastructure</span>
+                </th>
+            {{/isGroupByInfrastructure}}
+            {{^isGroupByScenario}}
+                <th style="width: 12.5%">
+                    <span>Scenario</span>
+                </th>
+            {{/isGroupByScenario}}
+            <th style="width: 12.5%">
+                <span>Test case</span>
+            </th>
+            <th style="width: 45%">
+                <span>Failure Message</span>
+            </th>
+        </tr>
+        </thead>
+        {{{parsedReportElementsString}}}
+    </table>
+    <br/>
+    <br/>
+    <!-- End of test results -->
+{{/groupBy}}

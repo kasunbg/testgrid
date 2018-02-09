@@ -30,11 +30,19 @@ hs_err_pid*
 # target
 *target*
 
-target
-.classpath
-.settings
-.project
-*.iml
-*.iws
-*.ipr
-.idea
+# webapp dependencies
+node_modules/
+build/
+npm/
+webapp/
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

@@ -21,13 +21,13 @@
     <parent>
         <groupId>org.wso2</groupId>
         <artifactId>wso2</artifactId>
-        <version>1</version>
+        <version>5</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.wso2.carbon.testgrid</groupId>
-    <artifactId>carbon-testgrid-framework</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <groupId>org.wso2.testgrid</groupId>
+    <artifactId>testgrid-framework</artifactId>
+    <version>0.9.0-m13-SNAPSHOT</version>
     <name>WSO2 TestGrid Framework - Aggregator POM</name>
     <url>http://wso2.org</url>
     <packaging>pom</packaging>
@@ -38,9 +38,12 @@
         <module>deployment</module>
         <module>core</module>
         <module>infrastructure</module>
+        <module>dao</module>
         <module>reporting</module>
+        <module>web</module>
+        <module>logging</module>
+        <module>test/coverage</module>
         <module>distribution</module>
-        <!--<module>api</module>-->
     </modules>
 
     <scm>
@@ -103,6 +106,65 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>2.5.5</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>${org.codehaus.mojo.version}</version>
+                </plugin>
+
+                <!-- Maven Jacoco plugin -->
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>report</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                        <!-- Specify a minimum coverage ratio. If not met the build will fail -->
+                        <execution>
+                            <id>jacoco-check</id>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <rule>
+                                        <element>PACKAGE</element>
+                                        <limits>
+                                            <limit>
+                                                <counter>LINE</counter>
+                                                <value>COVEREDRATIO</value>
+                                                <minimum>0.00</minimum>
+                                            </limit>
+                                        </limits>
+                                    </rule>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- Maven surefire plugin -->
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <inherited>false</inherited>
+                    <configuration>
+                        <systemPropertyVariables>
+                            <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+                        </systemPropertyVariables>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -184,205 +246,168 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- Automation Framework dependencies-->
+            <!-- Plugin dependencies -->
             <dependency>
-                <groupId>org.wso2.carbon.automation</groupId>
-                <artifactId>org.wso2.carbon.automation.engine</artifactId>
-                <version>${test.framework.version}</version>
+                <groupId>org.jacoco</groupId>
+                <artifactId>org.jacoco.ant</artifactId>
+                <version>${jacoco.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.automation</groupId>
-                <artifactId>org.wso2.carbon.automation.extensions</artifactId>
-                <version>${test.framework.version}</version>
+                <groupId>org.jacoco</groupId>
+                <artifactId>org.jacoco.agent</artifactId>
+                <version>${jacoco.version}</version>
+                <classifier>runtime</classifier>
             </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.automation</groupId>
-                <artifactId>org.wso2.carbon.automation.test.utils</artifactId>
-                <version>${test.framework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.config</groupId>
-                <artifactId>org.wso2.carbon.config</artifactId>
-                <version>${carbon.config.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.testng</groupId>
-                <artifactId>testng</artifactId>
-                <version>${testng.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>${commons.logging.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons.io.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.googlecode.json-simple.wso2</groupId>
-                <artifactId>json-simple</artifactId>
-                <version>${com.googlecode.json-simple.wso2.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.wink</groupId>
-                <artifactId>wink-client</artifactId>
-                <version>${wink.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.bind</groupId>
-                        <artifactId>jaxb-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
+            <!-- Core dependencies -->
             <dependency>
                 <groupId>org.eclipse.jgit</groupId>
                 <artifactId>org.eclipse.jgit</artifactId>
                 <version>${jgit.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.json.wso2</groupId>
-                <artifactId>json</artifactId>
-                <version>${json.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.ws.rs</groupId>
-                <artifactId>javax.ws.rs-api</artifactId>
-                <version>${jax.rs.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.orbit.org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>${org.snakeyaml.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.fabric8</groupId>
-                <artifactId>kubernetes-api</artifactId>
-                <version>${kubernetes.api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.fabric8</groupId>
-                <artifactId>kubernetes-client</artifactId>
-                <version>${kubernetes.client.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-httpclient</groupId>
-                <artifactId>commons-httpclient</artifactId>
-                <version>${commons.httpclient.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-cli</groupId>
-                <artifactId>commons-cli</artifactId>
-                <version>${commons.cli.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-exec</artifactId>
-                <version>${apache.commons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-mapper-asl</artifactId>
-                <version>${codehaus.jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>br.eti.kinoshita</groupId>
-                <artifactId>testlink-java-api</artifactId>
-                <version>${testlink.java.api.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.xmlrpc</groupId>
-                        <artifactId>xmlrpc-common</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.xml.bind</groupId>
-                        <artifactId>jaxb-api</artifactId>
-                    </exclusion>
-                </exclusions>
+                <groupId>args4j</groupId>
+                <artifactId>args4j</artifactId>
+                <version>2.33</version>
             </dependency>
 
-            <!-- Jackson yaml dependencies-->
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.data-bind.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.annotation.version}</version>
-            </dependency>
-
-            <!-- Apache commons dependencies-->
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${apache.commons.lang.version}</version>
-            </dependency>
-
-            <!--TestGrid Dependencies-->
-            <dependency>
-                <groupId>org.wso2.carbon.testgrid</groupId>
-                <artifactId>org.wso2.carbon.testgrid.common</artifactId>
-                <version>${test.grid.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.testgrid</groupId>
-                <artifactId>org.wso2.carbon.testgrid.core</artifactId>
-                <version>${test.grid.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.testgrid</groupId>
-                <artifactId>org.wso2.carbon.testgrid.automation</artifactId>
-                <version>${test.grid.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.testgrid</groupId>
-                <artifactId>org.wso2.carbon.testgrid.deployment</artifactId>
-                <version>${test.grid.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.testgrid</groupId>
-                <artifactId>org.wso2.carbon.testgrid.infrastruture</artifactId>
-                <version>${test.grid.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.testgrid</groupId>
-                <artifactId>org.wso2.carbon.testgrid.reporting</artifactId>
-                <version>${test.grid.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.testgrid</groupId>
-                <artifactId>org.wso2.carbon.testgrid.utils</artifactId>
-                <version>${test.grid.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-csv</artifactId>
-                <version>${version.commons.csv}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.spullara.mustache.java</groupId>
-                <artifactId>compiler</artifactId>
-                <version>${version.mustache.java}</version>
-            </dependency>
-
+            <!-- Infrastructure dependencies -->
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk</artifactId>
                 <version>${com.aws.version}</version>
             </dependency>
-
+            <!-- Required for AWS SDK -->
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>${apache.http.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents.client5</groupId>
+                <artifactId>httpclient5-fluent</artifactId>
+                <version>${apache.httpcomponents.fluent.version}</version>
+            </dependency>
+
+            <!-- Automation Framework dependencies-->
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${testng.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_http</artifactId>
+                <version>${apache.jmeter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_core</artifactId>
+                <version>${apache.jmeter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.jmeter</groupId>
+                <artifactId>ApacheJMeter_java</artifactId>
+                <version>${apache.jmeter.version}</version>
+            </dependency>
+
+            <!-- DAO dependencies -->
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>javax.persistence</artifactId>
+                <version>${javax.persistence.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>org.eclipse.persistence.jpa</artifactId>
+                <version>${javax.persistence.version}</version>
+            </dependency>
+
+            <!-- Web app dependencies -->
+            <dependency>
+                <groupId>javax.websocket</groupId>
+                <artifactId>javax.websocket-api</artifactId>
+                <version>${javax.websocket.version}</version>
+            </dependency>
+
+            <!-- Jackson dependencies-->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${com.fasterxml.jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${com.fasterxml.jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${com.fasterxml.jackson.version}</version>
+            </dependency>
+
+            <!-- GlassFish dependencies-->
+            <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-server</artifactId>
+                <version>${jersey.server.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.containers</groupId>
+                <artifactId>jersey-container-servlet-core</artifactId>
+                <version>${jersey.server.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-json-jackson</artifactId>
+                <version>${jersey.server.version}</version>
+            </dependency>
+
+            <!--TestGrid Dependencies-->
+            <dependency>
+                <groupId>org.wso2.testgrid</groupId>
+                <artifactId>org.wso2.testgrid.logging</artifactId>
+                <version>${test.grid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.testgrid</groupId>
+                <artifactId>org.wso2.testgrid.common</artifactId>
+                <version>${test.grid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.testgrid</groupId>
+                <artifactId>org.wso2.testgrid.core</artifactId>
+                <version>${test.grid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.testgrid</groupId>
+                <artifactId>org.wso2.testgrid.automation</artifactId>
+                <version>${test.grid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.testgrid</groupId>
+                <artifactId>org.wso2.testgrid.deployment</artifactId>
+                <version>${test.grid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.testgrid</groupId>
+                <artifactId>org.wso2.testgrid.infrastruture</artifactId>
+                <version>${test.grid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.testgrid</groupId>
+                <artifactId>org.wso2.testgrid.reporting</artifactId>
+                <version>${test.grid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.testgrid</groupId>
+                <artifactId>org.wso2.testgrid.dao</artifactId>
+                <version>${test.grid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.spullara.mustache.java</groupId>
+                <artifactId>compiler</artifactId>
+                <version>${version.mustache.java}</version>
             </dependency>
 
             <!-- Test dependencies -->
@@ -404,63 +429,156 @@
                 <version>${powermock.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${com.h2database.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- Other dependencies-->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${apache.commons.lang.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${apache.commons.io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>${awaitility.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+
+            <!--Logging dependencies-->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j.api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j.core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>org.eclipse.persistence.core</artifactId>
+                <version>${javax.persistence.version}</version>
+            </dependency>
+            <!--FindBugs dependencies-->
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>annotations</artifactId>
+                <version>${findbugs.annotations.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- SSO dependencies-->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${javax.servlet.api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons.lang.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.agent.sso.java</groupId>
+                <artifactId>org.wso2.carbon.identity.sso.agent</artifactId>
+                <version>${wso2.carbon.identity.agent.sso.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>opensaml.wso2</groupId>
+                        <artifactId>opensaml2</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>commons-collections.wso2</groupId>
+                        <artifactId>commons-collections</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.opensaml</groupId>
+                <artifactId>opensaml</artifactId>
+                <version>${org.opensaml.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-collections</groupId>
+                        <artifactId>commons-collections</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <properties>
-
+        <!-- Plugin versions -->
+        <jacoco.version>0.7.9</jacoco.version>
         <!-- TestGrid version-->
-        <test.grid.version>0.9.0-SNAPSHOT</test.grid.version>
-        <!-- Jackson versions-->
-        <jackson.yaml.version>2.3.0</jackson.yaml.version>
-        <jackson.data-bind.version>2.6.3</jackson.data-bind.version>
-        <jackson.annotation.version>2.6.0</jackson.annotation.version>
+        <test.grid.version>0.9.0-m13-SNAPSHOT</test.grid.version>
+        <!-- Test Grid core dependencies -->
+        <jgit.version>4.1.1.201511131810-r</jgit.version>
+        <!-- TestGrid infrastructure dependencies -->
+        <com.aws.version>1.11.219</com.aws.version>
+        <apache.http.version>4.5.3</apache.http.version>
         <!-- Automation Framework version-->
-        <test.framework.version>4.4.2</test.framework.version>
+        <apache.jmeter.version>3.3</apache.jmeter.version>
+        <testng.version>6.11</testng.version>
         <!-- Apache commons dependencies-->
         <apache.commons.lang.version>3.4</apache.commons.lang.version>
-        <project.scm.id>scm-server</project.scm.id>
         <wso2.maven.compiler.source>1.8</wso2.maven.compiler.source>
         <wso2.maven.compiler.target>1.8</wso2.maven.compiler.target>
+        <!-- Reporting dependencies -->
+        <version.mustache.java>0.9.5</version.mustache.java>
         <!-- Test dependencies -->
         <mockito.all.version>1.10.19</mockito.all.version>
         <powermock.version>1.7.3</powermock.version>
-
+        <com.h2database.version>1.4.196</com.h2database.version>
+        <!-- DAO dependencies -->
+        <javax.persistence.version>2.2.0</javax.persistence.version>
+        <jersey.server.version>2.17</jersey.server.version>
+        <!-- Web app dependencies -->
+        <javax.websocket.version>1.1</javax.websocket.version>
         <!-- Other dependencies -->
-        <carbon.config.version>2.1.4</carbon.config.version>
-        <axis2.wso2.version>1.6.1.wso2v16</axis2.wso2.version>
-        <axiom.version>1.2.11.wso2v10</axiom.version>
-        <testng.version>6.11</testng.version>
-        <commons.logging.version>1.1.1</commons.logging.version>
-        <commons.io.version>2.2</commons.io.version>
-        <commons.cli.version>1.2</commons.cli.version>
-        <commons.httpclient.version>3.1</commons.httpclient.version>
-        <apache.commons.version>1.3</apache.commons.version>
-
-        <zip4j.version>1.2.3</zip4j.version>
-        <greenmail.version>1.3.1b</greenmail.version>
-        <project.scm.id>scm-server</project.scm.id>
-        <sshd.version>0.13.0</sshd.version>
-        <fabric8.version>1.0.10</fabric8.version>
-        <jgit.version>4.1.1.201511131810-r</jgit.version>
-        <googlecode.version>1.1</googlecode.version>
-        <json.version>2.0.0.wso2v1</json.version>
-        <codehaus.jackson.version>1.9.13</codehaus.jackson.version>
-        <wink.version>1.4</wink.version>
-        <ibatis.version>3.0-beta-10</ibatis.version>
-        <javax.ws.rs-api.version>2.0.1</javax.ws.rs-api.version>
-        <org.snakeyaml.version>1.16.0.wso2v1</org.snakeyaml.version>
-        <jax.rs.version>2.0.1</jax.rs.version>
-        <kubernetes.api.version>2.2.136</kubernetes.api.version>
-        <kubernetes.client.version>1.3.69</kubernetes.client.version>
-        <commons.cli.version>1.2</commons.cli.version>
-        <commons.exec.version>1.3</commons.exec.version>
-        <testlink.java.api.version>1.9.14-0</testlink.java.api.version>
-        <com.googlecode.json-simple.wso2.version>1.1.wso2v1</com.googlecode.json-simple.wso2.version>
-        <com.aws.version>1.11.219</com.aws.version>
-        <apache.http.version>4.5.3</apache.http.version>
-
-        <version.commons.csv>1.5</version.commons.csv>
-        <version.mustache.java>0.9.5</version.mustache.java>
+        <awaitility.version>3.0.0</awaitility.version>
+        <guava.version>19.0</guava.version>
+        <snakeyaml.version>1.19</snakeyaml.version>
+        <com.fasterxml.jackson.version>2.8.0</com.fasterxml.jackson.version>
+        <apache.httpcomponents.fluent.version>5.0-alpha3</apache.httpcomponents.fluent.version>
+        <apache.commons.io.version>2.6</apache.commons.io.version>
+        <!-- Logging dependencies -->
+        <slf4j.api.version>1.7.25</slf4j.api.version>
+        <log4j.api.version>2.8.2</log4j.api.version>
+        <log4j.core.version>2.8.2</log4j.core.version>
+        <!--Dashboard dependencies-->
+        <org.codehaus.mojo.version>1.3.2</org.codehaus.mojo.version>
+        <!--Findbugs dependencies-->
+        <findbugs.annotations.version>3.0.1</findbugs.annotations.version>
+        <!--SSO dependencies-->
+        <javax.servlet.api.version>3.1.0</javax.servlet.api.version>
+        <commons.lang.version>2.6</commons.lang.version>
+        <wso2.carbon.identity.agent.sso.version>5.1.3</wso2.carbon.identity.agent.sso.version>
+        <org.opensaml.version>2.6.4</org.opensaml.version>
     </properties>
 </project>

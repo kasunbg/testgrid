@@ -19,14 +19,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>org.wso2.carbon.testgrid</groupId>
-        <artifactId>carbon-testgrid-framework</artifactId>
-        <version>0.9.0-SNAPSHOT</version>
+        <groupId>org.wso2.testgrid</groupId>
+        <artifactId>testgrid-framework</artifactId>
+        <version>0.9.0-m13-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.wso2.carbon.testgrid.automation</artifactId>
+    <artifactId>org.wso2.testgrid.automation</artifactId>
     <name>WSO2 TestGrid Framework - Automation POM</name>
     <url>http://wso2.org</url>
     <packaging>jar</packaging>
@@ -37,69 +37,77 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <inherited>true</inherited>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <dependencies>
+        <!-- TestGrid dependencies -->
+        <dependency>
+            <groupId>org.wso2.testgrid</groupId>
+            <artifactId>org.wso2.testgrid.common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.testgrid</groupId>
+            <artifactId>org.wso2.testgrid.dao</artifactId>
+        </dependency>
+
+        <!-- TestNG dependencies -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
         </dependency>
+
+        <!-- JMeter dependencies -->
         <dependency>
-            <groupId>org.apache.wink</groupId>
-            <artifactId>wink-client</artifactId>
+            <groupId>org.apache.jmeter</groupId>
+            <artifactId>ApacheJMeter_core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jgit</groupId>
-            <artifactId>org.eclipse.jgit</artifactId>
+            <groupId>org.apache.jmeter</groupId>
+            <artifactId>ApacheJMeter_http</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.json.wso2</groupId>
-            <artifactId>json</artifactId>
+            <groupId>org.apache.jmeter</groupId>
+            <artifactId>ApacheJMeter_java</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.wso2.orbit.org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-cli</groupId>
-            <artifactId>commons-cli</artifactId>
-        </dependency>
+
+        <!-- Other dependencies -->
         <dependency>
             <groupId>org.apache.commons</groupId>
-            <artifactId>commons-exec</artifactId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>kubernetes-api</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
+
+        <!-- Jacoco agent -->
         <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>kubernetes-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>br.eti.kinoshita</groupId>
-            <artifactId>testlink-java-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.testgrid</groupId>
-            <artifactId>org.wso2.carbon.testgrid.common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.testgrid</groupId>
-            <artifactId>org.wso2.carbon.testgrid.utils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.testgrid</groupId>
-            <artifactId>org.wso2.carbon.testgrid.reporting</artifactId>
+            <groupId>org.jacoco</groupId>
+            <artifactId>org.jacoco.agent</artifactId>
+            <classifier>runtime</classifier>
         </dependency>
     </dependencies>
 </project>
