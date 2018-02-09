@@ -40,7 +40,10 @@ WSO2Infrastructurefile:
   IACProvider: <IACProvider>
   supportedInfrastructureProviders: <InfrastructureProvider>
   ContainerOrchestrationEngine: <ContainerOrchestrationEngine> (optional)
-
+  Inputs:
+    ParseInfrastructureScriptsForInputs: 
+    otherInputs:
+      - ...
 ```
 
 ```
