@@ -103,7 +103,7 @@ git repository that takes care of invoking the deployment scripts. In addition,
 ### WSO2Deployfile
 This is syntax of the WSO2Deployfile:
 
-```
+```yaml
 WSO2Deployfile:
   deploymentPatterns:
     - name: <string>
@@ -130,7 +130,7 @@ Type enum {
 ```
 
 Example WSO2Deployfile:
-```
+```yaml
 WSO2Deployfile:
   deploymentPatterns:
     - name: 01-two-node-deployment
