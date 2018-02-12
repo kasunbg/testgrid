@@ -18,17 +18,17 @@
 package org.wso2.testgrid.common.config;
 
 /**
- * Represents a given test-plan that'll be read to orchestrate a
- * test-run.
+ * Represents a given test-plan that'll be read to run a
+ * given test-run.
  *
  * @since 1.0.0
  */
 public class TestPlan {
 
     private String version;
-    private InfrastructureConfig infrastructureConfig;
-    private DeploymentConfig deploymentConfig;
-    private ScenarioConfig scenarioConfig;
+    private InfrastructureConfig infrastructureConfig = new InfrastructureConfig();
+    private DeploymentConfig deploymentConfig = new DeploymentConfig();
+    private ScenarioConfig scenarioConfig = new ScenarioConfig();
 
     public String getVersion() {
         return version;
