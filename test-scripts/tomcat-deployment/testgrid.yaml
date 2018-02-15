@@ -17,7 +17,7 @@
 # TestGrid Test Configuration Parameters
 # TODO use dash as the separator instead of camelCase.
 version: '0.9'
-infrastructure:
+infrastructureConfig:
   iacProvider: CLOUDFORMATION
   infrastructureProvider: SHELL
   containerOrchestrationEngine: None
