@@ -40,6 +40,48 @@ public class InfrastructureConfig implements Serializable {
     private Properties parameters = new Properties();
     private List<Provisioner> provisioners;
 
+    public IACProvider getIacProvider() {
+        return iacProvider;
+    }
+
+    public void setIacProvider(IACProvider iacProvider) {
+        this.iacProvider = iacProvider;
+    }
+
+    public InfrastructureProvider getInfrastructureProvider() {
+        return infrastructureProvider;
+    }
+
+    public void setInfrastructureProvider(
+            InfrastructureProvider infrastructureProvider) {
+        this.infrastructureProvider = infrastructureProvider;
+    }
+
+    public ContainerOrchestrationEngine getContainerOrchestrationEngine() {
+        return containerOrchestrationEngine;
+    }
+
+    public void setContainerOrchestrationEngine(
+            ContainerOrchestrationEngine containerOrchestrationEngine) {
+        this.containerOrchestrationEngine = containerOrchestrationEngine;
+    }
+
+    public Properties getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Properties parameters) {
+        this.parameters = parameters;
+    }
+
+    public List<Provisioner> getProvisioners() {
+        return ListUtils.emptyIfNull(provisioners);
+    }
+
+    public void setProvisioners(List<Provisioner> provisioners) {
+        this.provisioners = provisioners;
+    }
+
     /**
      * Defines the infrastructure provider types.
      *
@@ -107,53 +149,11 @@ public class InfrastructureConfig implements Serializable {
         }
     }
 
-    public IACProvider getIacProvider() {
-        return iacProvider;
-    }
-
-    public void setIacProvider(IACProvider iacProvider) {
-        this.iacProvider = iacProvider;
-    }
-
-    public InfrastructureProvider getInfrastructureProvider() {
-        return infrastructureProvider;
-    }
-
-    public void setInfrastructureProvider(
-            InfrastructureProvider infrastructureProvider) {
-        this.infrastructureProvider = infrastructureProvider;
-    }
-
-    public ContainerOrchestrationEngine getContainerOrchestrationEngine() {
-        return containerOrchestrationEngine;
-    }
-
-    public void setContainerOrchestrationEngine(
-            ContainerOrchestrationEngine containerOrchestrationEngine) {
-        this.containerOrchestrationEngine = containerOrchestrationEngine;
-    }
-
-    public Properties getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(Properties parameters) {
-        this.parameters = parameters;
-    }
-
-    public List<Provisioner> getProvisioners() {
-        return ListUtils.emptyIfNull(provisioners);
-    }
-
-    public void setProvisioners(List<Provisioner> provisioners) {
-        this.provisioners = provisioners;
-    }
-
     /**
-     * Provisioner has the same behavior as the {@link DeploymentConfig.DeploymentPattern}.
+     * Provisioner has the same behavior as the {@link DeploymentConfig.DeploymentPatternConfig}.
      * todo
      */
-    public static class Provisioner extends DeploymentConfig.DeploymentPattern {
+    public static class Provisioner extends DeploymentConfig.DeploymentPatternConfig {
         private static final long serialVersionUID = -3937792864579403430L;
     }
 }

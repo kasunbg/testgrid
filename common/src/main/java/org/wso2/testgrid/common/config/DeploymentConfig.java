@@ -33,29 +33,29 @@ public class DeploymentConfig implements Serializable {
 
     private static final long serialVersionUID = -3264052940825641013L;
 
-    private List<DeploymentPattern> deploymentPatterns;
+    private List<DeploymentPatternConfig> deploymentPatterns;
 
     public DeploymentConfig() {
         this(Collections.emptyList());
     }
 
-    public DeploymentConfig(List<DeploymentPattern> deploymentPatterns) {
+    public DeploymentConfig(List<DeploymentPatternConfig> deploymentPatterns) {
         this.deploymentPatterns = deploymentPatterns;
     }
 
-    public List<DeploymentPattern> getDeploymentPatterns() {
+    public List<DeploymentPatternConfig> getDeploymentPatterns() {
         return ListUtils.emptyIfNull(deploymentPatterns);
     }
 
     public void setDeploymentPatterns(
-            List<DeploymentPattern> deploymentPatterns) {
+            List<DeploymentPatternConfig> deploymentPatterns) {
         this.deploymentPatterns = deploymentPatterns;
     }
 
     /**
      * todo.
       */
-    public static class DeploymentPattern implements Serializable {
+    public static class DeploymentPatternConfig implements Serializable {
         private static final long serialVersionUID = 5484623288608884369L;
 
         private String name;
@@ -97,7 +97,7 @@ public class DeploymentConfig implements Serializable {
 
         @Override
         public String toString() {
-            return "DeploymentPattern{" +
+            return "DeploymentPatternConfig{" +
                     "name='" + name + '\'' +
                     ", description='" + description + '\'' +
                     '}';
