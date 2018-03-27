@@ -102,7 +102,21 @@ public class InfrastructureCombinationsProvider {
     }
 
     /**
-     * todo.
+     * Treat the a properties values of @{@link InfrastructureParameter}s as
+     * top-level @{@link InfrastructureParameter}s.
+     * The properties is a way to group a set of infrastructure parameters that
+     * belong together. This allows us to generate the infrastructure combination set
+     * correctly.
+     * Then, after the infrastructure combinations are generated at run time, we add these
+     * properties as top-level infrastructure parameters into each infrastructure combination.
+     *
+     * For example, the database engine and version has hard-relationship. Therefore,
+     * creating separate entries in the infrastructure_parameter table for these
+     * does not seem correct. Hence, a grouped infrastructure_parameter entry named 'database'
+     * can be created, and then we put the engine and version as its properties.
+     *
+     * @param combination the infrastructure combination where we will add the new infrastructure parameters
+     * @param origInfraParameter The original infrastructure parameter that contain the properties
      */
     private void addSubpropertiesAsInfrastructureParameters(InfrastructureCombination combination,
             InfrastructureParameter origInfraParameter) {

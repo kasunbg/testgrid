@@ -37,7 +37,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * todo
+ * Add new infrastructure parameters into infrastructure_parameter table.git
+ *
  */
 @Path("/infrastructure")
 @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
