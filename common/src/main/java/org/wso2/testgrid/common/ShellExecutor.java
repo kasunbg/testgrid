@@ -43,7 +43,7 @@ import java.util.function.Consumer;
  */
 public class ShellExecutor {
 
-    private static Logger logger = LoggerFactory.getLogger(ShellExecutor.class);
+    private static Logger logger = LoggerFactory.getLogger("Shell");
 
     private Path workingDirectory;
 

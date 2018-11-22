@@ -96,7 +96,7 @@ import static java.nio.file.StandardOpenOption.CREATE;
 public class TestPlanExecutor {
 
     public static final int LINE_LENGTH = 72;
-    private static final Logger logger = LoggerFactory.getLogger(TestPlanExecutor.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestPlanExecutor.class.getSimpleName());
     private static final int MAX_NAME_LENGTH = 52;
     private static final int CONFIG_CHANGE_SET_RETRY_COUNT = 10;
     private TestScenarioUOW testScenarioUOW;
@@ -476,7 +476,8 @@ public class TestPlanExecutor {
     private void executeTestScenario(TestScenario testScenario, DeploymentCreationResult deploymentCreationResult,
                                      TestPlan testPlan) {
         try {
-            logger.info("\n--- Executing test: " + testScenario.getName());
+            logger.info("");
+            logger.info("--- Executing test: " + testScenario.getName());
 
             scenarioExecutor.execute(testScenario, deploymentCreationResult, testPlan);
             Optional<ResultParser> parser = ResultParserFactory.getParser(testPlan, testScenario);
