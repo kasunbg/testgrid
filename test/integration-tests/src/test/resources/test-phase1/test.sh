@@ -86,13 +86,13 @@ export DATA_BUCKET_LOCATION=${INPUT_DIR}
 #=============== Execute Scenarios ===============================================
 
 echo 'Downloading dummy surefire-reports'
-wget https://s3.amazonaws.com/testgrid-resources/test-dev-phase1/Dummy1.zip
+wget -q https://s3.amazonaws.com/testgrid-resources/test-dev-phase1/Dummy1.zip
 
 ls
 
 echo 'Unzip downloaded files into data bucket'
 mkdir -p ${OUTPUT_DIR}/scenarios
-unzip Dummy1.zip -d ${OUTPUT_DIR}/scenarios
+unzip Dummy1.zip -qd ${OUTPUT_DIR}/scenarios
 
 echo 'Files in data bucket:'
 ls ${OUTPUT_DIR}
