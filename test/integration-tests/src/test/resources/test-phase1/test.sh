@@ -92,7 +92,7 @@ ls
 
 echo 'Unzip downloaded files into data bucket'
 mkdir -p ${OUTPUT_DIR}/scenarios
-unzip Dummy1.zip -qd ${OUTPUT_DIR}/scenarios
+unzip -q Dummy1.zip -d ${OUTPUT_DIR}/scenarios
 
 echo 'Files in data bucket:'
 ls ${OUTPUT_DIR}
