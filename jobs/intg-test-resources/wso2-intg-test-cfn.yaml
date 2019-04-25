@@ -76,22 +76,30 @@ Parameters:
   WSO2InstanceType:
     Description: 'EC2 instance type of the WSO2 EI Node [t2.micro is the free tier]'
     Type: String
-    Default: m3.xlarge
+    Default: c3.4xlarge
     AllowedValues:
-      - t2.nano
-      - t1.micro
       - t2.micro
       - t2.small
       - t2.medium
       - t2.large
       - t2.xlarge
       - t2.2xlarge
+      - t3.micro
+      - t3.medium
+      - t3.large
+      - t3.xlarge
+      - t3.2xlarge
       - m3.medium
       - m3.large
       - m3.xlarge
       - m3.2xlarge
       - m4.large
+      - m5.large
+      - m5.xlarge
+      - m5.2xlarge
       - c3.4xlarge
+      - c5.2xlarge
+      - c5.4xlarge
     ConstraintDescription: must be a valid EC2 instance type
   WUMUsername:
     Type: String
@@ -114,7 +122,7 @@ Parameters:
     Description: Enter product version
   OS:
     Type: String
-    Default: ubuntu
+    Default: Ubuntu
     Description: >-
       Enter target OS. This will be the username of the created EC2 instances as
       well.
@@ -130,6 +138,7 @@ Parameters:
       - OPEN_JDK8
       - ORACLE_JDK8
       - ADOPT_OPEN_JDK8
+      - CORRETTO_JDK8
   MavenVersion:
     Type: String
     Default: '3.3.9'
@@ -165,7 +174,7 @@ Mappings:
 #Conditions
 Conditions:
  IsWindows: !Equals [ !Ref OS, "Windows" ]
- IsUnix: !Or [ !Equals [ !Ref OS, "CentOS"], !Equals [ !Ref OS, "UBUNTU" ], !Equals [ !Ref OS, "RHEL" ]]
+ IsUnix: !Or [ !Equals [ !Ref OS, "CentOS"], !Equals [ !Ref OS, "Ubuntu" ], !Equals [ !Ref OS, "RHEL" ]]
  IsDBEnabled : !Not  [ !Equals [ !Ref DBEnabled, "false" ]]
 Resources:
   WSO2InstanceSecurityGroup:
@@ -226,7 +235,7 @@ Resources:
     CreationPolicy:
       ResourceSignal:
         Count: '1'
-        Timeout: PT10M
+        Timeout: PT20M
     Properties:
       DisableApiTermination: 'false'
       InstanceInitiatedShutdownBehavior: stop
@@ -251,13 +260,7 @@ Resources:
 
           set -e
           set -o xtrace
-          trap 'trap' 1 2 15
-          
-          trap()
-          {
-            echo "############ TRAPPED"          
-          }
-          
+
           setup_java_env() {
           JDK=ORACLE_JDK8
           source /etc/environment
@@ -290,7 +293,7 @@ Resources:
           chmod 777 -R /opt/testgrid
           cd /opt/testgrid/workspace
 
-          #setup_java_env
+          setup_java_env
           echo "Installing Apache Maven"
           #wget https://archive.apache.org/dist/maven/maven-3/${MavenVersion}/binaries/apache-maven-${MavenVersion}-bin.tar.gz
           #tar -xvzf apache-maven-${MavenVersion}-bin.tar.gz
@@ -303,9 +306,9 @@ Resources:
 
           cat /dev/null > ~/.bash_history && history -c
           ${CustomUserData}
-          
+
           if [ "${JDK}" = "ADOPT_OPEN_JDK8" ]; then
-            echo "Exiting with exit 1  ###########################################################################"  
+            echo "Exiting with exit 1 ###########################################################################"
             exit 1;
           else
             echo "Exiting with cfn-signal notification"
@@ -313,11 +316,18 @@ Resources:
             --id "testing-cfn-signal-id-xxxxxxx"
             exit 2;
           fi
-          
+
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WSO2UnixInstance --region ${AWS::Region}
       Tags:
         - Key: Name
-          Value: wso2-apim-intg-node
+          Value: !Join
+            - ''
+            - - 'intg-test__'
+              - !Ref OS
+              - '__'
+              - !Ref DBEngine
+              - '__'
+              - !Ref JDK
       SecurityGroups:
         - !Ref WSO2InstanceSecurityGroup
     Metadata:
@@ -342,13 +352,14 @@ Resources:
         DisableApiTermination: 'false'
         InstanceInitiatedShutdownBehavior: stop
         ImageId: !Ref AMI
-        InstanceType: 'm3.2xlarge'
+        
+        InstanceType: !Ref WSO2InstanceType
         KeyName: !Ref EC2KeyPair
         Monitoring: 'false'
         "BlockDeviceMappings" : [
            {
               "DeviceName" : "/dev/sda1",
-              "Ebs" : { "VolumeSize" : "50" }
+              "Ebs" : { "VolumeSize" : "100" }
            },
         ]
         UserData:
@@ -369,6 +380,16 @@ Resources:
             ${CustomUserData}
             </powershell>
             <persist>true</persist>
+        Tags:
+          - Key: Name
+            Value: !Join
+              - ''
+              - - 'intg-test__'
+                - !Ref OS
+                - '__'
+                - !Ref DBEngine
+                - '__'
+                - !Ref JDK
         SecurityGroups:
           - !Ref WSO2InstanceSecurityGroup
       Metadata:
