@@ -4,6 +4,8 @@
 # Pushing it to the Private Docker registry
 
 set -o xtrace
+alias wget='wget -q'
+alias unzip='unzip -q'
 
 LOG_FILE="" # log.txt
 GIT_REPO_ZIP_URL=""
